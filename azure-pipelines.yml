@@ -7,23 +7,27 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
+# Download NuGet packages and project-specific tools
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
     feedsToUse: 'select'
+
+# Build the project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
+# Run unit tests 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
@@ -31,7 +35,6 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 # publish artifacts
-
 - task: DotnetCoreCLI@2
   displayName: 'dotnet publish'
   inputs:
